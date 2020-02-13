@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
 )
@@ -11,26 +13,33 @@ type ContactDetails struct {
 	Subject string
 	Message string
 }
+type Blog struct {
+	Content string
+	Body    string
+}
 
 //defining the template details
 func main() {
 
 	http.HandleFunc("/", FeedbackHandler)
-	http.HandleFunc("/", BlogHandler)
+	http.HandleFunc("/blog", BlogHandler)
 
 	http.ListenAndServe(":8000", nil)
 
 }
 
 func BlogHandler(w http.ResponseWriter, r *http.Request) {
-	
-     
+
+	blog :=[] Blog{
+		{ Content: "This is the content of my blog", Body:"Body items"},
+		{Content:"title", Body:"I am here"},
+		{Content:"heyy" , Body:"sunshine"},
+	}
+	jsonContent, _ := json.Marshal(blog)
+
+	fmt.Fprintf(w, "%s", jsonContent)
+
 }
-
-
-
-
-
 func FeedbackHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("forms.html"))
 
